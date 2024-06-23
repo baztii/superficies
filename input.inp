@@ -1,0 +1,17 @@
+word aAbBccdD
+show
+word dDeE
+word ff
+show
+fusion
+show
+solve
+erase all
+show
+word aa
+word bB
+word cC
+erase 0
+show
+solve
+end
