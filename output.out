@@ -1,9 +1,21 @@
-[aAbBccdD]
-invalid word
-[aAbBccdD, ff]
-[aAbBccdDff]
-[ccff] = 2P²
+
 []
-[bB,cC]
-[] = S²
----
+La superfície descrita és S² (esfera)
+[aa]
+La superfície descrita és 1P² (pla projectiu)
+[]
+La superfície descrita és S² (esfera)
+[]
+La superfície descrita és S² (esfera)
+[]
+La superfície descrita és S² (esfera)
+[ee]
+La superfície descrita és 1P² (pla projectiu)
+[cdCD]
+La superfície descrita és 1T² (tor)
+[ddbbacAC]
+La superfície descrita és 4P² (pla projectiu)
+[abAByxYX]
+La superfície descrita és 2T² (tor)
+[abABcdCDefEFghGH]
+La superfície descrita és 4T² (tor)

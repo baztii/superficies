@@ -1,5 +1,4 @@
-######################### COMPACTE I CONNEX ###########################################
-
+######################### COMPACTE I CONNEX ###############################
 
 class WORD:
     def __init__(self, word : str):
@@ -11,9 +10,9 @@ class WORD:
 
     def reverseWord(self, start : int = -1, end : int = -1): # the word is reversed
         if start == -1: start = 0
-        if end == -1: end = self.length-1
+        if end == -1: end = len(self.word)-1
 
-        self.word = self.word[:start] + self.word[end:start-1:-1] + self.word[end+1:]
+        self.word = self.word[:start] + self.word[end:start:-1] + self.word[start]+ self.word[end+1:]
     
     def oppositeChar(self, c : str) -> str: # returns the opposite of a letter
         return c.upper() if c.islower() else c.lower()
@@ -58,7 +57,7 @@ class WORD:
     def invertWord(self, start : int = -1, end : int = -1): # the word[start..end] or all the word is inverted
 
         if start == -1: start = 0
-        if end == -1: end = self.length-1
+        if end == -1: end = len(self.word)-1
 
         for i in range(start, end+1):
             self.word = self.word[:i] + self.oppositeChar(self.word[i]) + self.word[i+1:]
@@ -99,7 +98,7 @@ class SCHEMA:
 
     def validSchema(self) -> bool: # returns if the schema is valid
         for c in self.usages:
-            if self.usages[c] not in {0,2}: return False
+            if self.usages[c] + self.usages[self.oppositeChar(c)] not in {0,2}: return False
 
         for w in self.wordSet:
             if len(w.word) < 2: return False
@@ -133,7 +132,7 @@ class SCHEMA:
         self.wordSet.append(w1)
         self.wordSet.append(w2)
 
-    def paste(self, idx1 : int, idx2 :int): # pastes two words from the schema
+    def paste(self, idx1 : int, idx2 : int): # pastes two words from the schema
         w1 = self.wordSet[idx1].word
         w2 = self.wordSet[idx2].word
 
@@ -170,6 +169,12 @@ class SCHEMA:
         self.wordSet[idx].cycleWord(step)
 
     def invert(self, idx : int, start : int = -1, end : int = -1): # w = a1..an -> w = An..A1
+
+        if start > end: return
+
+        if start == -1: start = 0
+        if end == -1: end = len(self.wordSet[idx].word) - 1
+
         self.wordSet[idx].reverseWord(start,end)
         for c in self.wordSet[idx].word[start:end+1]:
             self.usages[c] -= 1
@@ -225,13 +230,11 @@ class SCHEMA:
             self.permute(idx,j)
             self.invert(0)
             self.paste(0,idx)
-            return
-        
-        j = self.wordSet[idx].word.find(self.oppositeChar(c))
-
-        self.permute(0,-len(self.wordSet[0].word)+i+1)
-        self.permute(idx, j)
-        self.paste(0,idx)
+        else:
+            j = self.wordSet[idx].word.find(self.oppositeChar(c))
+            self.permute(0,-len(self.wordSet[0].word)+i+1)
+            self.permute(idx, j)
+            self.paste(0,idx)
 
         self.fusion()
 
@@ -310,41 +313,40 @@ class SCHEMA:
         self.clean()
         self.fusion()
 
+        if len(self.wordSet) != 1:
+            while len(self.wordSet) != 1:
+                self.connexSum(0,1)
+
         k = self.proj()
         n = self.torus(2*k)
 
         print(self)
+        print("La superfície descrita és ", end='')
 
         if k == 0 and n == 0:
-            print(f"La superfície descrita és una esfera")
+            print(f"S² (esfera)")
         elif k != 0:
-            print(f"La superfície descrita són {k+2*n} plans projectius")
+            print(f"{k+2*n}P² (pla projectiu)")
         else:
-            print(f"La superfície descrita són {n} tors")
+            print(f"{n}T² (tor)")
             
 def main():
-    s1 = SCHEMA(["abcdabcdeeffghgihi"])
-    s2 = SCHEMA(["abABcdCDee"])
-    s3 = SCHEMA(["abcabc"])
-    s4 = SCHEMA(["abcdcAbD"])  
-    s5 = SCHEMA(["abbcAddC"])
-    s6 = SCHEMA(["abcdACBD"])
-    s7 = SCHEMA(["abABcdCD"])
-    s8 = SCHEMA(["abcadBefcEdF"])
-    s1.solve()
-    s2.solve()
-    s3.solve()
-    s4.solve()
-    s5.solve()
-    s6.solve()
-    s7.solve()
-    s8.solve()
+    print("Aquest programa demana una superfície COMPACTA I CONNEXA a l'usuari i la classifica")
+    print("Obs: si la superfície no és connexa en fa la suma connexa i la classifica")
+    print("Obs: la inversa d'una lletra és la majúscula (i.e. a⁻¹ = A)")
+    print("Obs: premeu 'q' per sortir")
 
-def gameloop():
-    pass
+    while True:
+        esquema = input("Introdueix un esquema (separa cada paraula amb un espai): \n")
+        if esquema == 'q' or esquema == 'Q': return
+
+        esquema = esquema.split()
+
+        sq = SCHEMA(esquema)
+        if not sq.validSchema():
+            print("L'esquema no és vàlid!")
+        else:
+            sq.solve()
 
 if __name__ == "__main__":
     main()
-
-
-
